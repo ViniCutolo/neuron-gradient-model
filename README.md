@@ -1,3 +1,5 @@
+<img src="Imagens cabeçalho/Cabecalho.png"/>
+
 # Simulação de Gradiente de um neurônio (SiGraNe)
 
 Projeto que visa simular neurônios para avaliar o fluxo de íons, comportamento em redes maiores e qualidade de reconstrução de sinal. Esse projeto é um trabalho de final do primeiro semestre da ILUM do aluno Vinícius Marianno De Marque Cutolo.
@@ -10,3 +12,4 @@ Depois de baixar todas as extenções dentro do requirements.txt, o usuário dev
 ``` sh
 pip install -r requirements.txt
 ```
+<img src="Imagens cabeçalho/Rodape.png"/>
