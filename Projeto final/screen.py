@@ -20,17 +20,6 @@ def main():
     class StopAll(Exception):
         pass
 
-    def init_menu(larg: int, altura: int):
-        pygame.quit()
-        pygame.init()
-
-        tela = pygame.display.set_mode((larg, altura))
-        pygame.display.set_caption("Menu")
-
-        clock = pygame.time.Clock()
-
-        return tela, clock
-
     def is_in(mx: float, my: float, rect: pygame.Rect):
         """Vamos verificar e o mouse está em cima do botão"""
         return rect.collidepoint(mx, my)
@@ -53,52 +42,19 @@ def main():
         return frames
 
     def justificar_texto(texto: str, largura: int):
+        linha = ""
         palavras = texto.split()
-        linhas = []
-        linha_atual = []
-        comprimento_atual = 0
 
+        tamanho = 0
         for palavra in palavras:
-            if comprimento_atual + len(palavra) + len(linha_atual) <= largura:
-                linha_atual.append(palavra)
-                comprimento_atual += len(palavra)
-            else:
-                linhas.append(linha_atual)
-                linha_atual = [palavra]
-                comprimento_atual = len(palavra)
+            if tamanho + len(palavra) + 1 > largura:
+                linha += "\n"
+                tamanho = 0
 
-        if linha_atual:
-            linhas.append(linha_atual)
+            linha += palavra + " "
+            tamanho += len(palavra) + 1
 
-        resultado = []
-
-        for i, linha in enumerate(linhas):
-            # última linha → alinhada à esquerda
-            if i == len(linhas) - 1:
-                resultado.append(" ".join(linha))
-                continue
-
-            total_letras = sum(len(p) for p in linha)
-            espacos = largura - total_letras
-            gaps = len(linha) - 1
-
-            if gaps > 0:
-                espaco_base = espacos // gaps
-                sobra = espacos % gaps
-
-                linha_justificada = ""
-                for j, palavra in enumerate(linha[:-1]):
-                    linha_justificada += palavra
-                    linha_justificada += " " * (espaco_base + (1 if j < sobra else 0))
-
-                linha_justificada += linha[-1]
-            else:
-                # caso de uma única palavra na linha
-                linha_justificada = linha[0]
-
-            resultado.append(linha_justificada)
-
-        return "\n".join(resultado)
+        return linha
 
     def componentes_reais(resultados: dict, modo: str):
         """Essa função extrai o resultado e coloca como uma string, há dois modos:
@@ -146,6 +102,13 @@ def main():
     # Fazendo a tela e o nome dela
     tela = pygame.display.set_mode((larg, altura))
     pygame.display.set_caption("Menu")
+
+    # Para poder mudar de tela sem nenhum problema
+    screen = "Menu"
+
+    # Isso vai para o solver mais tarde
+    lista_dedos = [0, 0, 0, 0, 0]
+    area = None
 
     # Imagens
     solo_botao = pygame.image.load(
@@ -212,7 +175,7 @@ def main():
 
     # Textos para renderizarmos depois
     # Texto solo
-    str_texto_solo = "Esse simulação visa analisar como que os canais de um neurônio isolado se comportam a um determinado estimulo ou situação (pensando nas sinapses). Para avaliar isso, temos os seguintes comandos: 'Enter' para dar o estímulo, 'UpArrow' e 'DownArrow' para aumentar ou diminuir a intensidade do estimulo, 'Space' para receber uma corrente sináptica estimulante, 'B' para receber uma corrente sináptica inibitória, 'RightArrow' e 'LeftArrow' para controlar o intervalo de tempo etimulante do modo pulso_cronometrado, 'T' para iniciar o modo pulso_cronometrado (que dura 10 ms) e, por fim, 'Escape' sai da simulação. Para fins didáticos, os circulos amarelos são íons de K, vermelho são íons Na e os verdes são íons Ca, com Na<K<Ca"
+    str_texto_solo = "Essa simulação visa analisar como que os canais de um neurônio isolado se comportam a um determinado estimulo ou situação (pensando nas sinapses). Para avaliar isso, temos os seguintes comandos: 'Enter' para dar o estímulo, 'UpArrow' e 'DownArrow' para aumentar ou diminuir a intensidade do estimulo, 'Space' para receber uma corrente sináptica estimulante, 'B' para receber uma corrente sináptica inibitória, 'RightArrow' e 'LeftArrow' para controlar o intervalo de tempo etimulante do modo pulso_cronometrado, 'T' para iniciar o modo pulso_cronometrado (que dura 10 ms) e, por fim, 'Escape' sai da simulação. Para fins didáticos, os circulos amarelos são íons de K, vermelho são íons Na e os verdes são íons Ca, com Na<K<Ca"
 
     str_texto_solo = justificar_texto(str_texto_solo, 70)
     texto_solo = fonte_bem_pequena.render(str_texto_solo, True, (0, 0, 0))
@@ -232,17 +195,6 @@ def main():
     """Quando eu aperto um botão, ele precisa sair de dois loops ao mesmo tempo.
     Para isso, vou usar try e dar raise em um StopIteration quando um botão for
     apertado."""
-
-    # Para poder mudar de tela sem nenhum problema
-    screen = "Menu"
-
-    # Isso vai para o solver mais tarde
-    lista_dedos = [0, 0, 0, 0, 0]
-    area = None
-
-    # while kb.is_pressed("escape"):
-    #     # Esse cara serve para quando eu fechar os programas ele não fechar o menu direto
-    #     pass
 
     try:
         while True:
