@@ -114,9 +114,13 @@ class Ion:
 def steady_state(Q: np.array):
     # Vamos definir o equilíbrio inicial
     A = Q.copy()
+    # Substitui a última linha por 1
     A[-1, :] = 1
+    # Cria um vetor [0,0,0,...]
     b = np.zeros(Q.shape[0])
+    # Troca o último elemento por 1
     b[-1] = 1
+    # Resolve o sistema linear e acha o vetor
     return np.linalg.solve(A, b)
 
 
@@ -198,7 +202,7 @@ def dV_dt(t: float, V: float, estados: dict, g: dict, C: float, Ir: float):
         -(g["Ca"][0] / C) * (V - g["Ca"][1]) * estados["PCa"][2]
     )  # Corrente de cálcio
     comp6 = -(g["KCa"][0] / C) * (V - g["KCa"][1]) * KCa_open(estados["Ca_i"])
-    # Corrente de acúmulo de cálcio (não coube na linha de cima T_T))
+    # Corrente de acúmulo de cálcio (não coube na linha de cima T_T)
     # Corrente da sinapse Excitatoria
     comp7 = -(g["SynE"][0] / C) * (V - g["SynE"][1]) * estados["SynE"]
     # Corrente da sinapse Inibitória
@@ -433,7 +437,7 @@ def main():
     width, height = 960, 600
 
     tela = pygame.display.set_mode((width, height))
-    pygame.display.set_caption("Membrana do meu mano neurônio")
+    pygame.display.set_caption("Membrana do neurônio")
 
     clock = pygame.time.Clock()
 
@@ -503,6 +507,8 @@ def main():
 
     b_agr = False
     b_ant = False
+
+    render_a_cada = 2
 
     while True:
         # definindo o mode teste
@@ -729,30 +735,27 @@ def main():
             )
             ions.append(ion)
 
-        # Arualizando as particulas
         for ion in ions:
             ion.update(dt, ions, b_membrana, pos_canais)
-            ion.draw(tela)
 
-        pygame.display.flip()
         ax.legend()
 
-        if delta < 0.01:
-            # plt.pause(delta)
-            fig.canvas.draw_idle()
-            fig.canvas.flush_events()
+        if ((t * 1000) // 5) % render_a_cada == 0:
+            # Arualizando as particulas
+            for ion in ions:
+                ion.draw(tela)
 
-        else:
-            # plt.pause(0.01)
-            fig.canvas.draw_idle()
-            fig.canvas.flush_events()
+            pygame.display.flip()
+            if delta < 0.01:
+                fig.canvas.draw_idle()
+                fig.canvas.flush_events()
+
+            else:
+                fig.canvas.draw_idle()
+                fig.canvas.flush_events()
 
     pygame.quit()
     plt.close()
-    # #Vamos iniciar o menu novamente
-    # import screen # noqa: E402
-    # import sys
-    # sys.exit()
 
 
 if __name__ == "__main__":

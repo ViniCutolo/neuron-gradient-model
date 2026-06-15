@@ -1,13 +1,8 @@
-import matplotlib
-
-matplotlib.use("TkAgg")
-
-import matplotlib.pyplot as plt  # noqa: E402
-import numpy as np  # noqa: E402
-import pickle  # noqa: E402
-from pathlib import Path  # noqa: E402
-from sklearn.linear_model import OrthogonalMatchingPursuit  # noqa: E402
-from scipy.fft import rfft, rfftfreq, irfft  # noqa: E402
+import numpy as np
+import pickle
+from pathlib import Path
+from sklearn.linear_model import OrthogonalMatchingPursuit
+from scipy.fft import rfft, rfftfreq, irfft
 
 """
    Para didatica: 
@@ -16,7 +11,7 @@ from scipy.fft import rfft, rfftfreq, irfft  # noqa: E402
    irfft aplica o rfft inverso (O i significa inverse :3 )
 """
 
-bib_path = Path(r"Projeto final\Data\bib_eeg.pkl")
+bib_path = Path(r"Data\bib_eeg.pkl")
 
 
 def Decompouser_FFT(sinal: np.ndarray, fs: float):
@@ -390,8 +385,6 @@ def componentes_teste(resultado: dict):
 def main(comp_reais: list, inicio: int):
     sinais = carrega_espaco()
 
-    print(sinais)
-
     sinais_reais = ["Dedão", "Indicador", "Dedo médio", "Anelar", "Mindinho"]
 
     frag = criar_frag_teste(sinais, sinais_reais, comp_reais, inicio, 300)
@@ -405,4 +398,4 @@ def main(comp_reais: list, inicio: int):
 
 
 if __name__ == "__main__":
-    main([1, 1, 0, 0, 0], 0)
+    print(main([1, 1, 0, 0, 0], 0))
