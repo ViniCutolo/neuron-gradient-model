@@ -261,7 +261,7 @@ def main():
                 )
                 rect = texto.get_rect(
                     center=(
-                        larg - texto.get_width() // 2,
+                        larg - texto.get_width() // 2 - 25,
                         altura - 50 + y_offset,
                     )
                 )
@@ -297,7 +297,7 @@ def main():
                         # Abre a simulação do neuronio sozinho como subprocesso
                         base = os.path.dirname(__file__)
 
-                        arquivo = os.path.join(base, "Simulations\prototype_2.py")
+                        arquivo = os.path.join(base, r"Simulations\prototype_2.py")
 
                         subprocess.run(["python", arquivo])
 
@@ -350,7 +350,7 @@ def main():
 
                         base = os.path.dirname(__file__)
 
-                        arquivo = os.path.join(base, "Simulations\simulation_8.py")
+                        arquivo = os.path.join(base, r"Simulations\simulation_8.py")
 
                         subprocess.run(["python", arquivo])
 
@@ -523,9 +523,7 @@ def main():
                     click = pygame.mouse.get_just_pressed()[0]
                     arrow_botaoR.set_alpha(128)
                     if click and area is not None:
-                        # Calculando o fragmento e a composeção
-                        global resultado
-                        global fragmento
+                        # Calculando o fragmento e a composição
                         resultado, fragmento = fft.main(lista_dedos, area)
 
                         # Criando um arquivo para o subprocesso poder ler
@@ -540,7 +538,7 @@ def main():
                         # Plotando resultado para se bonitinho :3 (se eu plotar dentro do pygame, o tamanho da janela zoa)
                         base = os.path.dirname(__file__)
 
-                        arquivo = os.path.join(base, "Simulations\plot_frag.py")
+                        arquivo = os.path.join(base, r"Simulations\plot_frag.py")
 
                         subprocess.run(["python", arquivo])
 
