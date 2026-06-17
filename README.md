@@ -2,6 +2,11 @@
 
 # Simulação de Gradiente de um neurônio (SiGraNe)
 
+<p align="center">
+  <img src="https://img.shields.io/badge/Python-3.11-blue">
+  <img src="https://img.shields.io/badge/Área-Neurology%20Simulation-purple">
+</p>
+
 Projeto que visa simular neurônios para avaliar o fluxo de íons, comportamento em redes maiores e qualidade de reconstrução de sinal. Esse projeto é um trabalho de final do primeiro semestre da ILUM do aluno Vinícius Marianno De Marque Cutolo.
 
 ### Como executar:
