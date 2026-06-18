@@ -6,7 +6,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 import json
 
-
+# dando load nos dados
 with open("dados.json") as f:
     dados = json.load(f)
 
@@ -14,7 +14,7 @@ with open("dados.json") as f:
 fragmento = np.array(dados["fragmento"])
 resultado = np.array(dados["resultado"])
 
-# Plotando resultado para se bonitinho :3
+# Plotando resultado para se bonitinho
 plt.plot(fragmento, label="Sinal original")
 plt.plot(
     resultado,
