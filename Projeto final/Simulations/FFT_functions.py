@@ -5,9 +5,9 @@ from sklearn.linear_model import OrthogonalMatchingPursuit
 from scipy.fft import rfft, rfftfreq, irfft
 
 """
-   Para didatica: 
+   Para didática: 
    rfft é uma função que calcula o FFT para sinais reais
-   rfftfreq retorna a lista de frequencia de cada coeficiente
+   rfftfreq retorna a lista de frequência de cada coeficiente
    irfft aplica o rfft inverso (O i significa inverse :3 )
 """
 
@@ -16,7 +16,21 @@ bib_path = Path(r"Data\bib_eeg.pkl")
 
 def Decompouser_FFT(sinal: np.ndarray, fs: float):
     """Usando FFT, decompõe o sinal em varias componentes, util para guardar e fazer
-    operações futuras"""
+    operações futuras
+
+    Entradas:
+
+    sinal: lista ou array da onda que deseja decompor
+
+    fs: frequência de medição do sinal
+
+    Saída:
+
+    frequência: a frequência do sinal
+
+    coeficientes: os coeficientes da decomposição de Fourier
+
+    media: o valor médio do sinal, para transladar verticalmente"""
 
     # Garante que ta no formato certo, em teoria não muda nada além do formato
     sinal = np.asarray(sinal, dtype=float)
@@ -34,13 +48,33 @@ def Decompouser_FFT(sinal: np.ndarray, fs: float):
 
 
 def reconstrutor_FFT(coef: np.ndarray, media: float, n: int):
-    """Reconstroi o sinal original a partir dos coeficientes"""
+    """Reconstrói o sinal original a partir dos coeficientes
+
+    Entradas:
+
+    coeficientes: o array dos coeficientes de uma decomposição de Fourier
+
+    media: valor médio do sinal para ajustar o seu deslocamento vertical
+
+    n: o tamanho total do sinal
+
+    Saída:
+
+    sinal reconstruído"""
     x_rec = irfft(coef, n=n)
     return x_rec + media
 
 
 def salvar_assinatura(nome: str, sinal: list, tempo: list):
-    """Salva a assinatura do sinal em um array"""
+    """Salva a assinatura do sinal em um array
+
+    Entrada:
+
+    nome: string que diz o nome do sinal
+
+    sinal: a onda que deseja ser salva
+
+    tempo: lista com a marcação temporal de cada ponto"""
     # Converte no jeito de gente, uso o copy para nao modificar a lista original
     signal = np.asarray(sinal.copy())
     time = np.asarray(tempo.copy())
@@ -67,7 +101,17 @@ def salvar_assinatura(nome: str, sinal: list, tempo: list):
 
 
 def load_assinatura(nome: str):
-    """Carrega a assinatura do sinal"""
+    """Carrega a assinatura do sinal
+
+    Entradas:
+
+    nome: o nome do sinal que deseja recuperar
+
+    Saída:
+
+    sinal: O sinal reconstruído vinculado ao nome
+
+    fs: frequência de medição"""
     biblioteca = carrega_bib()
 
     data = biblioteca[nome]
@@ -84,7 +128,13 @@ def load_assinatura(nome: str):
 
 
 def carrega_bib():
-    """Garante que eu receba algo ao tentar carregar a minha biblioteca"""
+    """
+    Garante que eu receba algo ao tentar carregar a minha biblioteca
+
+    Saída:
+
+    biblioteca com todos os sinais salvos
+    """
     if not bib_path.exists() or bib_path.stat().st_size == 0:
         return {}
 
@@ -93,7 +143,11 @@ def carrega_bib():
 
 
 def salva_bib(biblioteca: dict):
-    """Garante que eu salve a minha biblioteca no arquivo bib_eeg"""
+    """Garante que eu salve a minha biblioteca no arquivo bib_eeg
+
+    Entrada:
+
+    Biblioteca que deseja sobrescrever dentro do arquivo de sinais"""
     bib_path.parent.mkdir(parents=True, exist_ok=True)
 
     with open(bib_path, "wb") as f:
@@ -101,7 +155,11 @@ def salva_bib(biblioteca: dict):
 
 
 def carrega_espaco():
-    """Retorna um dicionario dos sinais salvos"""
+    """Retorna um dicionario dos sinais salvos
+
+    Saída:
+
+    Um dicionário com cada sinal reconstruído vinculado com o seu nome"""
     biblioteca = carrega_bib()
 
     sinais = {}
@@ -122,11 +180,21 @@ def criar_frag_teste(sinais: dict, nomes: list, pesos: list, inicio: int, tamanh
     """
     Essa função cria um fragmento de tamanho fixo e com uma composição específica.
 
-    sinais: lista com todos os sinais disponiveis
+    Entrada:
+
+    sinais: lista com todos os sinais disponíveis
+
     nomes: quais sinais compões esse fragmento
+
     pesos: os pesos de cada sinal em nomes
+
     inicio: a partir de que trecho dos sinais a gente vai pegar
+
     tamanho: tamanho do sinal
+
+    Saída:
+
+    Um array que contém o fragmento criado
     """
 
     # Veja se o tamanho ta coerente, caso contrario restrinja o tamanho
@@ -147,7 +215,15 @@ def criar_frag_teste(sinais: dict, nomes: list, pesos: list, inicio: int, tamanh
 
 
 def normaliza_sinal(x: np.ndarray):
-    """Normalizando o sinal para compararmos somente as oscilações"""
+    """Normalizando o sinal para compararmos somente as oscilações
+
+    Entrada:
+
+    x: um sinal qualquer que se deseja normalizar
+
+    Saída:
+
+    O sinal normalizado"""
     x = np.asarray(x, dtype=float)
     x = x - np.mean(x)
 
@@ -159,11 +235,23 @@ def normaliza_sinal(x: np.ndarray):
     return x / norma
 
 
-def montar_dicionario_janelas(sinais: dict, tamanho: int, candidatos: list):
+def montar_dicionario_janelas(sinais: dict, candidatos: list):
     """
-    Me fornece, em uma matriz coluna, as varias combinaçoes dos sinais possiveis.
+    Me fornece, em uma matriz coluna, as varias combinações dos sinais possíveis.
     Os sinais vão estar codificados na lista metadados, na qual indices iguais
     representam colunas condizentes
+
+    Entrada:
+
+    sinais: Um dicionário com cada sinal vinculado com seu nome
+
+    candidatos: um dicionário que tem todas as características dos melhores candidatos
+
+    Saída:
+
+    D: Matriz que combina todos os sinais em colunas para combinar os diversos coeficientes
+
+    metadados: dados adicionais de cada candidato
     """
     colunas = []
     metadados = []
@@ -191,22 +279,22 @@ def montar_dicionario_janelas(sinais: dict, tamanho: int, candidatos: list):
 
 
 def menor_sinal(sinais: dict):
-    """Retorna o menor tamanho dos sinais, assim podemos igualar todos em tamanho"""
+    """Retorna o menor tamanho dos sinais, assim podemos igualar todos em tamanho
+
+    Entrada:
+
+    sinais: um dicionário com todos os sinais identificados
+
+    Saída:
+
+    um inteiro que é o tamanho do menor sinal
+    """
     menor = float("inf")
     for i in sinais.values():
         if len(i) < menor:
             menor = len(i)
 
     return menor
-
-
-def score_combination(a: np.ndarray, b: np.ndarray):
-    """Me retorna os scores da operação D.T @ fragmento"""
-    return float(np.dot(a, b))
-
-
-def janela_valida(sinal, inicio, tamanho):
-    return 0 <= inicio and inicio + tamanho <= len(sinal)
 
 
 def top_candidatos_finder(
@@ -217,7 +305,27 @@ def top_candidatos_finder(
     top_k: int,
     regioes=None,
 ):
-    """Função que me diz quais são os top_k candidatos ao rodar no passo definido"""
+    """
+    Função que me diz quais são os top_k candidatos ao rodar no passo definido
+
+    Entrada:
+
+    fragmento_norm: array com um fragmento normalizável
+
+    sinais: dicionário com cada sinal identificado
+
+    tamanho: tamanho do fragmento
+
+    passo: qual passo sera usado para buscar novos candidatos
+
+    top_k: quanto são os candidatos que entram depois da filtragem da lista final
+
+    regiões: quais as regiões de busca e até quanto o programa irá buscar
+
+    Saída;
+
+    Retorna um dicionário com os k melhores candidatos dessa análise
+    """
 
     candidatos = []
 
@@ -279,6 +387,26 @@ def best_decomposicao_FFT(
     """
     Cospe a melhor combinação de sinais dentro de uma biblioteca
     de sinais possíveis para compor o meu fragmento de EEG.
+
+    Entrada:
+
+    fragmento: o trecho de sinal a ser decomposto
+
+    sinais: todos os sinais possíveis para essa decomposição
+
+    passos: uma tupla com quais passos o programa vai fazer o coarse to fine
+
+    top_k: quantos candidatos passaram para a próxima iteração do programa
+
+    max_componentes: quantas componentes compõe o sinal
+
+    erro_alvo: qual o erro que é suficiente para parar o programa
+
+    score_alvo: qual o score suficiente para o programa parar
+
+    Saída:
+
+    Um dicionário contendo os melhores candidatos, a melhor composição do sinal, o seu score, o seu erro, quantas componentes o compõe e a reconstrução do sinal
     """
 
     fragmento = np.asarray(fragmento, dtype=float)
@@ -317,7 +445,7 @@ def best_decomposicao_FFT(
         passo_anterior = passo  # noqa: F841
 
     # monta o dicionario final para score
-    D, metadados = montar_dicionario_janelas(sinais, tamanho, candidatos)
+    D, metadados = montar_dicionario_janelas(sinais, candidatos)
 
     melhor = None
 
@@ -325,6 +453,7 @@ def best_decomposicao_FFT(
     for n_comp in range(1, max_componentes + 1):
         modelo = OrthogonalMatchingPursuit(n_nonzero_coefs=n_comp, fit_intercept=False)
 
+        # Um objeto que acha o coeficiente que melhor explica o residuo
         modelo.fit(D, y)
 
         coef = modelo.coef_
@@ -334,6 +463,7 @@ def best_decomposicao_FFT(
         erro = np.linalg.norm(y - recon) / (np.linalg.norm(y) + 1e-12)
         score = float(np.dot(y, normaliza_sinal(recon)))
 
+        # Retorna o indice de todos os elementos maiores que e^-12
         idx = np.flatnonzero(np.abs(coef) > 1e-12)
 
         componentes = []
@@ -366,23 +496,21 @@ def best_decomposicao_FFT(
     return melhor
 
 
-def componentes_teste(resultado: dict):
-    """
-    Vai normalizar cada uma das componentes, fornecendo um valor aproximado
-    da composição do sinal
-    """
-
-    total = 0
-    for componente in resultado["componentes"]:
-        total += abs(componente["peso"])
-
-    for i, j in enumerate(resultado["componentes"]):
-        print(
-            f"Componente {i} ({j['nome']}, atraso de {j['inicio']}): {abs(j['peso']) / total}"
-        )
-
-
 def main(comp_reais: list, inicio: int):
+    """Loop principal do programa, que cria o fragmento e decompõe o sinal
+
+    Entrada:
+
+    comp_reais: qual a composição do fragmento em termos dos sinais
+
+    inicio:em que região a medição ocorre (um inteiro para simbolizar em qual índice o sinal inicia)
+
+    Saída:
+
+    Um dicionário contendo os melhores candidatos, a melhor composição do sinal, o seu score, o seu erro, quantas componentes o compõe e a reconstrução do sinal.
+
+    O fragmento normalizado, para ser comparado com o resultado.
+    """
     sinais = carrega_espaco()
 
     sinais_reais = ["Dedão", "Indicador", "Dedo médio", "Anelar", "Mindinho"]
