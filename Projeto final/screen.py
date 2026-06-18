@@ -18,14 +18,30 @@ def main():
     os.environ["SDL_VIDEO_WINDOW_POS"] = "240,100"
 
     class StopAll(Exception):
+        """Exceção de uma forma de erro"""
+
         pass
 
     def is_in(mx: float, my: float, rect: pygame.Rect):
-        """Vamos verificar e o mouse está em cima do botão"""
+        """
+        Vamos verificar e o mouse está em cima do botão. \n
+        Entradas: \n
+        mx: posição horizontal do mouse \n
+        my: posição vertical do mouse \n
+        rect: superfície do botão \n
+        Saída: \n
+        retorna um boolean
+        """
         return rect.collidepoint(mx, my)
 
     def carregar_gif(caminho: str):
-        """Decompõe um gif em frames e guarda eles em uma lista"""
+        """
+        Decompõe um gif em frames e guarda eles em uma lista \n
+        Entradas:\n
+        caminho: a string do diretório do gif\n
+        Saídas:\n
+        lista com os frames do gif\n
+        """
         gif = Image.open(caminho)
 
         frames = []
@@ -42,6 +58,12 @@ def main():
         return frames
 
     def justificar_texto(texto: str, largura: int):
+        """Da as quebras de linha quando o texto atinge um certo tamanho\n
+        Entradas:\n
+        text: string com o texto completo\n
+        largura: tamanho da linha\n
+        saída:\n
+        texto justificado"""
         linha = ""
         palavras = texto.split()
 
@@ -57,9 +79,15 @@ def main():
         return linha
 
     def componentes_reais(resultados: dict, modo: str):
-        """Essa função extrai o resultado e coloca como uma string, há dois modos:
-        Estimada: imagina que resultados é um dicionario da biblioteca FFT_functions
-        Reais: imagina que resultados é uma lista de números puros"""
+        """Essa função extrai o resultado e coloca como uma string, há dois modos:\n
+        Estimada: imagina que resultados é um dicionario da biblioteca FFT_functions\n
+        Reais: imagina que resultados é uma lista de números puros\n
+        \n
+        Entradas: \n
+        Resultados: Pode variar entre um dicionario ou uma lista, mas basicamente é um dos dois e contém o resultado da FFT_functions em string\n
+        modo: ja foi explicado acima\n
+        Saída:\n
+        Retorna uma string formatada para ser escrita"""
 
         if modo == "Estimada":
             total = 0
