@@ -30,7 +30,23 @@ def esta_dentro_x(
 
 
 class Ion:
-    def __init__(self, x, v, imagem, tipo, fator):
+    """Classe de objeto para os íons da animação"""
+
+    def __init__(
+        self, x: complex, v: complex, imagem: pygame.image, tipo: str, fator: float
+    ):
+        """Como variáveis internas, temos
+
+        x: posição atual do íon em complexo
+
+        v: velocidade atual do íon em complexo
+
+        imagem: qual o sprite desse objeto
+
+        tipo: qual categoria de animação ela vai pertencer
+
+        fator: uma variável auxiliar para ajustar a velocidade de evolução
+        """
         self.pos = np.array([x, v], dtype=complex)
         self.imagem = imagem
         # define qual animaçao ela vai cumprir
@@ -42,7 +58,16 @@ class Ion:
         self.fator = fator
 
     # Movimento
-    def update(self, dt, ions, b_membrana, canais):
+    def update(self, dt: float, ions: list, b_membrana: pygame.image, canais: list):
+        """Função que atualiza a posição da partícula, recebe:
+
+        dt: passo de evolução
+
+        ions: lista de ions ativos
+
+        b_membrana: imagem da do bloco de membrana
+
+        canais: lista com as posições dos canais"""
         if self.tipo == "Fluxo Superior":
             if np.real(self.pos[0]) > width:
                 ions.remove(self)
@@ -107,11 +132,18 @@ class Ion:
 
         self.rect.center = (np.real(self.pos[0]), np.imag(self.pos[0]))
 
-    def draw(self, surface):
+    def draw(self, surface: pygame.surface):
+        """Essa função atualiza o desenho do ion, recebe:
+
+        a tela a ser atualizado o desenho"""
         surface.blit(self.imagem, self.rect)
 
 
 def steady_state(Q: np.array):
+    """Cria o vetor estacionário para um dada matriz de transição
+
+    Q: Matriz de transição característica desse vetor"""
+
     # Vamos definir o equilíbrio inicial
     A = Q.copy()
     # Substitui a última linha por 1
@@ -125,13 +157,22 @@ def steady_state(Q: np.array):
 
 
 def exp_seguro(x: float):
+    """Função que impede que um valor saia de um certo intervalo, ela recebe:
+
+    x: o expoente de uma conta"""
     # vamos capar os expoentes para não ter erro computacional
     return np.exp(np.clip(x, -50, 50))
 
 
-def noise_P(n, sigma):
+def noise_P(n: int, sigma: float):
     """Essa função serve para adicionar um noise no calculo do P, para ficar
-    mais realista"""
+    mais realista.
+
+    Entrada:
+
+    n: tamanho do vetor de estado
+
+    sigma: desvio padrão da distribuição aleatória"""
     # Gera um noise aleatório
     eta = np.random.normal(0, sigma, size=n)
     eta = np.mean(eta)  # Força o np.sum(eta) a ser 0. Não alterando o P
@@ -140,6 +181,9 @@ def noise_P(n, sigma):
 
 
 def k_Na(V: float):
+    """Função que atualiza as constantes de equilibrio do canal de Na
+
+    Recebe o potencial atual"""
     return [
         0.04 * exp_seguro(0.075 * (V + 65)),  # k1(ativação)
         2.5 * exp_seguro(-0.035 * (V + 65)),  # k-1(desativação)
@@ -152,6 +196,9 @@ def k_Na(V: float):
 
 
 def k_K(V: float):
+    """Função que atualiza as constantes de equilibrio do canal de K
+
+    Recebe o potencial atual"""
     return [
         0.025 * exp_seguro(0.03 * (V + 65)),  # k1(ativação)
         0.25 * exp_seguro(-0.025 * (V + 65)),  # k-1(desativação)
@@ -162,6 +209,9 @@ def k_K(V: float):
 
 
 def k_Ca(V: float):
+    """Função que atualiza as constantes de equilibrio do canal de Ca
+
+    Recebe o potencial atual"""
     return [
         0.02 * exp_seguro(0.05 * (V + 65)),  # k1(ativação)
         0.2 * exp_seguro(-0.03 * (V + 65)),  # k-1(desativação)
@@ -172,6 +222,9 @@ def k_Ca(V: float):
 
 
 def k_L(V: float):
+    """Função que atualiza as constantes de equilibrio do canal de vazão
+
+    Recebe o potencial atual"""
     return [
         0.1,  # k1  (ativação)
         0.1,  # k-1 (desativação)
@@ -184,10 +237,29 @@ def k_L(V: float):
 
 
 def k_syn(V):
+    """Função que atualiza as constantes de equilibrio do canal de Sinapse
+
+    Recebe o potencial atual"""
     return []
 
 
 def dV_dt(t: float, V: float, estados: dict, g: dict, C: float, Ir: float):
+    """Diferencial do potencial para atualiza-lo.
+
+    Entradas:
+
+    t: tempo atual
+
+    V: potencial atual
+
+    estados: todos os vetores probabilidade de estado dos canais (dicionario)
+
+    g: a condutância dos canais (dicionario)
+
+    C: a capacitância da membrana
+
+    Ir: corrente de estímulo
+    """
     # Simplesmente aplica a equação diferencial do potencial
     # Como ela é grande, vamos separar em componentes
     comp1 = Ir / C  # Corrente de estímulo
@@ -218,17 +290,40 @@ def dV_dt(t: float, V: float, estados: dict, g: dict, C: float, Ir: float):
 
 
 def dCa_dt(ICa: float, Ca_i: float):
+    """Diferencial do canal não linear de cálcio
+
+    Entrada:
+
+    ICa: corrente no canal de cálcio
+
+    Ca_i: potencial acumulado dos íons cálcio
+    """
     Ca_rest = 0.0001
     alpha = 5e-7
     beta = 0.02
     return -alpha * ICa - beta * (Ca_i - Ca_rest)
 
 
-def dSyn_dt(s, tau):
+def dSyn_dt(s: float, tau: float):
+    """Diferencial da conexão sináptica, modela o decaimento do estímulo
+
+    Entrada:
+
+    s: intensidade atual do estímulo
+
+    tau: constante de decaimento
+    """
     return -s / tau
 
 
 def KCa_open(Ca_i: float):
+    """
+    Define o 'Vetor probabilidade' do canal não linear de cálcio
+
+    Entrada:
+
+    Ca_i: potencial acumulado do íon cálcio
+    """
     Kd = 0.0005  # mM
     n = 4
 
@@ -236,6 +331,22 @@ def KCa_open(Ca_i: float):
 
 
 def Matriz_de_transicao(nome: str, k: dict, V: float):
+    """
+    Cria a matriz de transição relacionada ao vetor probabilidade específico
+
+    Entrada:
+
+    nome: qual o nome do íon que será gerada a matriz
+
+    k: dicionário de constantes de equilíbrio
+
+    V: potencial de membrana
+
+    Saída:
+
+    A matriz de transição do canal
+    """
+
     if nome != "Na":
         K = k[nome][4](V)
         # Cria a matriz de transição
@@ -260,6 +371,29 @@ def Matriz_de_transicao(nome: str, k: dict, V: float):
 
 
 def f(t: float, y: np.array, k: dict, g: dict, C: float, Ir: float):
+    """
+    Função diferencial dos estados, ela que calcula o fator de evolução de cada uma das variáveis.
+
+    Entradas:
+
+    t: tempo atual da iteração
+
+    y: vetor que concatena todas as variáveis
+
+    k: dicionário das constantes de equilíbrio
+
+    g: dicionário das condutâncias de cada canal
+
+    C: capacitância da membrana
+
+    Ir: estímulo externo
+
+    Saída:
+
+    Um vetor de mesmo tamanho que o y, mas as entradas são as variações em cada uma das componentes
+
+    """
+
     # Tau das sinapses
     tau_E = 5.0
     tau_I = 10.0
@@ -318,6 +452,29 @@ def f(t: float, y: np.array, k: dict, g: dict, C: float, Ir: float):
 
 
 def RK4(t: float, y: list, dt: float, k: dict, g: dict, C: float, Ir: float):
+    """
+    Função que aplica o método de evolução RK4 em uma função
+
+    Entradas:
+
+    t: tempo atual da iteração
+
+    y: vetor que junta todas as variáveis para evoluir
+
+    dt: passo de evolução
+
+    k: dicionário das constantes de equilíbrio
+
+    g: dicionário das condutâncias de cada canal
+
+    C: capacitância da membrana
+
+    Ir: estímulo externo
+
+    Saída:
+
+    Novo estado evoluído de cada variável
+    """
 
     # f retorna as correntes tmb, vamos so colher elas
     k1 = f(t, y, k, g, C, Ir)[0]
@@ -329,6 +486,21 @@ def RK4(t: float, y: list, dt: float, k: dict, g: dict, C: float, Ir: float):
 
 
 def atualização(lista: list, var: float):
+    """
+    Função auxiliar que limita o tamanho de uma lista para poupar memória
+
+    Entrada:
+
+    lista: lista para atualizar
+
+    var: valor a ser adicionado nessa lista
+
+    Saída:
+
+    lista com var adicionado, mas limitada em um certo tamanho
+
+    """
+
     # Limita a minha lista para poupar memoria
     if len(lista) == 500:
         lista.pop(0)
