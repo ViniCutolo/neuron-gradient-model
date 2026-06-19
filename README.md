@@ -9,12 +9,78 @@
 
 Projeto que visa simular neurônios para avaliar o fluxo de íons, comportamento em redes maiores e qualidade de reconstrução de sinal. Esse projeto é um trabalho de final do primeiro semestre da ILUM do aluno Vinícius Marianno De Marque Cutolo.
 
-### Como executar:
+## Como executar:
 
-Depois de baixar todas as extenções dentro do requirements.txt, o usuário deve abrir a pasta 'Projeto final' dentro do VSCode (pode ser com outros aplicativos, mas faça isso sob sua conta em risco). Após isso, o arquivo que deve ser executado deve ser o screen.py.
+Depois de baixar todas as extenções dentro do requirements.txt, o usuário deve abrir a pasta 'Projeto final' como pasta principal do programa. Após isso, o arquivo que deve ser executado deve ser o screen.py.
 
 É recomendado criar um ambiente virtual para as bibliotecas desse projeto. O seguinte código deve ser rodado no seu terminal antes de iniciar o screen.py
 ``` sh
 pip install -r requirements.txt
 ```
+
+## Conteúdo:
+
+<ul>
+  <li> :file_folder: <b>Projeto final</b>: contém os scripts, arquivos e dados extras para rodar as simulações.</li>
+    <ul>
+      <li> :file_folder: <b>Data</b>: Armazena dados para as simulações.</li>
+        <ul>
+          <li> :card_file_box: <b>bib_eeg.pkl</b>: biblioteca dos sinais da simulação <b>FFT_functions</b></li>
+        </ul>
+      <li> :file_folder: <b>Simulation</b>: Guarda os scripts de cada simulação e as imagens usadas dentro dos projetos</li>
+        <ul>
+          <li> :file_folder: <b>Images</b>: Contém todos os sprites para o projeto</li>
+          <li>:page_facing_up:<b>FFT_functions.py</b>: script de decomposição e reconstrução de sinais</li>
+          <li>:page_facing_up:<b>plot_frag.py</b>: script que gera os gráficos da decomposição anterior</li>
+          <li>:page_facing_up:<b>prototype_2.py</b>: script que simula um neurônio isolado, evidenciando os seus canais iônicos</li>
+          <li>:page_facing_up:<b>simulation_8.py</b>: script de simulação de um eletroencefalograma sintético</li>
+        </ul>
+      <li> :page_facing_up: <b>screen.py</b>: Script principal, executa o menu das simulações.</li>
+      <li> :spiral_notepad: <b>requirements.txt</b>: txt com todas as bibliotecas necessárias para rodar o projeto.</li>
+    </ul>
+  </ul>
+</ul>
+
+## XKCD relevante:
+
+  ![img](https://imgs.xkcd.com/comics/curve_fitting.png)
+
+## Professores avaliadores:
+
+<table>
+  <tr>
+    <td align="center">
+      <a href="https://github.com/drcassar">
+        <img src="https://avatars.githubusercontent.com/u/9871905?v=4" width="100px;" alt="Foto do Cassar no Github"/><br>
+        <b>Prof. Dr. Daniel R. Cassar</b>
+      </a>
+    </td>
+    <td align="center">
+      <a href="https://github.com/jamesmalmeida">
+        <img src="https://avatars.githubusercontent.com/u/108157661?v=4" width="100px;" alt="Foto do James no Github"/><br>
+        <b>Prof. James Moraes de Almeida</b>
+      </a>
+    </td>
+    <td align="center">
+      <a href="https://github.com/llemos">
+        <img src="https://avatars.githubusercontent.com/u/1894434?v=4" width="100px;" alt="Foto do Leandro no Github"/><br>
+        <b>Prof. Leandro Nascimento Lemos</b>
+      </a>
+    </td>
+  </tr>
+</table>
+
+## Aluno:
+
+<table>
+  <tr>
+    <td align="center">
+      <a href="https://github.com/ViniCutolo">
+        <img src="https://avatars.githubusercontent.com/u/271505502?s=80&v=4" width="100px;" alt="Foto do Vinícius no Github"/><br>
+        <b>Vinícius Marianno de Marque Cutolo</b>
+      </a>
+    </td>
+  </tr>
+</table>
+
 <img src="Imagens cabeçalho/Rodape.png"/>
