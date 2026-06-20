@@ -361,8 +361,8 @@ def main():
                 tela.blit(fundo_text, rect_imagem)
 
                 # Desenhando texto
-                rect = texto_solver.get_rect(center=(larg // 2, altura // 2))
-                tela.blit(texto_solver, rect)
+                rect = texto_multi.get_rect(center=(larg // 2, altura // 2))
+                tela.blit(texto_multi, rect)
 
                 # Interagindo com o mouse (seta direita)
                 rect_imagem = arrow_botaoR.get_rect(
@@ -414,8 +414,8 @@ def main():
                 tela.blit(fundo_text, rect_imagem)
 
                 # Desenhando texto
-                rect = texto_multi.get_rect(center=(larg // 2, altura // 2))
-                tela.blit(texto_multi, rect)
+                rect = texto_solver.get_rect(center=(larg // 2, altura // 2))
+                tela.blit(texto_solver, rect)
 
                 # Interagindo com o mouse (seta direita)
                 rect_imagem = arrow_botaoR.get_rect(
